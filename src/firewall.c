@@ -13,13 +13,13 @@
 #include "packet.h"
 #include "utils.h"
 
-#define SO_RING_SZ		(PKT_SZ * 1000)
+#define SO_RING_SZ (PKT_SZ * 1000)
 
 pthread_mutex_t MUTEX_LOG;
 
 void log_lock(bool lock, void *udata)
 {
-	pthread_mutex_t *LOCK = (pthread_mutex_t *) udata;
+	pthread_mutex_t *LOCK = (pthread_mutex_t *)udata;
 
 	if (lock)
 		pthread_mutex_lock(LOCK);
@@ -44,7 +44,8 @@ int main(int argc, char **argv)
 	int num_consumers, threads, rc;
 	pthread_t *thread_ids = NULL;
 
-	if (argc < 4) {
+	if (argc < 4)
+	{
 		fprintf(stderr, "Usage %s <input-file> <output-file> <num-consumers:1-32>\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
@@ -54,7 +55,8 @@ int main(int argc, char **argv)
 
 	num_consumers = strtol(argv[3], NULL, 10);
 
-	if (num_consumers <= 0 || num_consumers > 32) {
+	if (num_consumers <= 0 || num_consumers > 32)
+	{
 		fprintf(stderr, "num-consumers [%d] must be in the interval [1-32]\n", num_consumers);
 		exit(EXIT_FAILURE);
 	}
@@ -69,10 +71,11 @@ int main(int argc, char **argv)
 	publish_data(&ring_buffer, argv[1]);
 
 	/* TODO: wait for child threads to finish execution*/
-	(void) threads;
+	for (int i = 0; i < threads; i++)
+		pthread_join(thread_ids[i], NULL);
 
 	free(thread_ids);
+	ring_buffer_destroy(&ring_buffer);
 
 	return 0;
 }
-
