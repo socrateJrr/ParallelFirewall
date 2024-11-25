@@ -7,9 +7,9 @@
 #include <string.h>
 #include <pthread.h>
 
-typedef struct so_ring_buffer_t {
+typedef struct so_ring_buffer_t
+{
 	char *data;
-
 	size_t read_pos;
 	size_t write_pos;
 
@@ -17,15 +17,13 @@ typedef struct so_ring_buffer_t {
 	size_t cap;
 
 	pthread_mutex_t mutex;
-    pthread_cond_t prod_cond;
-    pthread_cond_t cons_cond; 
 
 } so_ring_buffer_t;
 
-int     ring_buffer_init(so_ring_buffer_t *rb, size_t cap);
+int ring_buffer_init(so_ring_buffer_t *rb, size_t cap);
 ssize_t ring_buffer_enqueue(so_ring_buffer_t *rb, void *data, size_t size);
 ssize_t ring_buffer_dequeue(so_ring_buffer_t *rb, void *data, size_t size);
-void    ring_buffer_destroy(so_ring_buffer_t *rb);
-void    ring_buffer_stop(so_ring_buffer_t *rb);
+void ring_buffer_destroy(so_ring_buffer_t *rb);
+void ring_buffer_stop(so_ring_buffer_t *rb);
 
 #endif /* __SO_RINGBUFFER_H__ */

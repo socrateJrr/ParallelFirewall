@@ -17,23 +17,22 @@ void consumer_thread(so_consumer_ctx_t *ctx)
 	{
 		so_packet_t packet;
 		int result = ring_buffer_dequeue(ctx->producer_rb, &packet, PKT_SZ);
-		if (result < 0)
+		if (result == -1)
 			break;
-		// pthread_mutex_lock(&ctx->timestamp_mutex);
 
 		so_action_t action = process_packet(&packet);
 		unsigned long hash = packet_hash(&packet);
 		unsigned long time = packet.hdr.timestamp;
 
-		// pthread_mutex_unlock(&ctx->timestamp_mutex);
-
 		pthread_mutex_lock(&ctx->log_mutex);
+
 		char buffer[PKT_SZ];
-		int len = snprintf(buffer, sizeof(buffer), "%s %016lx %lu\n", RES_TO_STR(action), hash, time);
+		int len = snprintf(buffer, 256, "%s %016lx %lu\n", RES_TO_STR(action), hash, time);
 		write(fd, buffer, len);
-		// dprintf(fd, "%s %016lx %lu\n", RES_TO_STR(action), hash, time);
+
 		pthread_mutex_unlock(&ctx->log_mutex);
 	}
+
 	close(fd);
 }
 
@@ -46,8 +45,6 @@ int create_consumers(pthread_t *tids, int num_consumers, struct so_ring_buffer_t
 
 		ctx->producer_rb = rb;
 		pthread_mutex_init(&ctx->log_mutex, NULL);
-		// pthread_mutex_init(&ctx->timestamp_mutex, NULL);
-
 		int result = pthread_create(&tids[i], NULL, consumer_thread, ctx);
 	}
 
