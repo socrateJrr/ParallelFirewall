@@ -23,14 +23,11 @@ int ring_buffer_init(so_ring_buffer_t *ring, size_t cap)
 
 ssize_t ring_buffer_enqueue(so_ring_buffer_t *ring, void *data, size_t size)
 {
-    if (ring == NULL || data == NULL || size == 0)
-        return -1;
-
     pthread_mutex_lock(&ring->mutex);
 
     memcpy(ring->data + ring->write_pos, data, size);
 
-    ring->write_pos = (ring->write_pos + size) % ring->cap;
+    ring->write_pos = ring->write_pos + size;
     ring->len += size;
 
     pthread_mutex_unlock(&ring->mutex);
@@ -40,14 +37,14 @@ ssize_t ring_buffer_enqueue(so_ring_buffer_t *ring, void *data, size_t size)
 
 ssize_t ring_buffer_dequeue(so_ring_buffer_t *ring, void *data, size_t size)
 {
-    if (ring == NULL || data == NULL || size == 0 || size > ring->len)
+    if (ring->len == 0)
         return -1;
 
     pthread_mutex_lock(&ring->mutex);
 
     memcpy(data, ring->data + ring->read_pos, size);
 
-    ring->read_pos = (ring->read_pos + size) % ring->cap;
+    ring->read_pos = ring->read_pos + size;
     ring->len -= size;
 
     pthread_mutex_unlock(&ring->mutex);
@@ -57,16 +54,12 @@ ssize_t ring_buffer_dequeue(so_ring_buffer_t *ring, void *data, size_t size)
 
 void ring_buffer_destroy(so_ring_buffer_t *ring)
 {
-    if (ring == NULL)
-        return;
-
     pthread_mutex_destroy(&ring->mutex);
 }
 
 void ring_buffer_stop(so_ring_buffer_t *ring)
 {
-    if (ring == NULL)
-        return;
-    pthread_mutex_lock(&ring->mutex);
-    pthread_mutex_unlock(&ring->mutex);
+    return;
+    // pthread_mutex_lock(&ring->mutex);
+    // pthread_mutex_unlock(&ring->mutex);
 }
