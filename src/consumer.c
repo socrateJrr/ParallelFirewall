@@ -38,11 +38,10 @@ int create_consumers(pthread_t *tids, int num_consumers, struct so_ring_buffer_t
 	{
 		so_consumer_ctx_t *ctx = malloc(sizeof(so_consumer_ctx_t));
 		ctx->out_filename = out_filename;
-
 		ctx->producer_rb = rb;
 		pthread_mutex_init(&ctx->log_mutex, NULL);
+
 		pthread_create(&tids[i], NULL, consumer_thread, ctx);
 	}
-
 	return num_consumers;
 }

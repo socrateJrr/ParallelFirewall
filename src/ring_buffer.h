@@ -15,9 +15,11 @@ typedef struct so_ring_buffer_t
 
 	size_t len;
 	size_t cap;
+	int stop;
 
 	pthread_mutex_t mutex;
-
+	pthread_cond_t cond_prod;
+	pthread_cond_t cond_cons;
 } so_ring_buffer_t;
 
 int ring_buffer_init(so_ring_buffer_t *rb, size_t cap);
