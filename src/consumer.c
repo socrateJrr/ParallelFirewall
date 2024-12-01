@@ -83,9 +83,10 @@ void write_sorted_log(so_consumer_ctx_t *ctx)
     so_action_t action;
     unsigned long hash, timestamp;
 
-    pthread_mutex_lock(&ctx->heap_mutex);
+    // pthread_mutex_lock(&ctx->heap_mutex);
 
-    while (ctx->finished_consumers < ctx->num_consumers) {
+    while (ctx->finished_consumers < ctx->num_consumers)
+    {
         pthread_cond_signal(&ctx->cond);
         pthread_cond_wait(&ctx->cond, &ctx->heap_mutex);
     }
@@ -102,7 +103,7 @@ void write_sorted_log(so_consumer_ctx_t *ctx)
 
         // pthread_mutex_unlock(&ctx->log_mutex);
     }
-    pthread_mutex_unlock(&ctx->heap_mutex);
+    // pthread_mutex_unlock(&ctx->heap_mutex);
     close(fd);
 }
 
@@ -121,11 +122,11 @@ void consumer_thread(so_consumer_ctx_t *ctx)
         pthread_mutex_unlock(&ctx->heap_mutex);
     }
     ctx->finished_consumers++;
-    pthread_mutex_lock(&ctx->log_mutex);
+    pthread_mutex_lock(&ctx->heap_mutex);
     if (ctx->finished_consumers == ctx->num_consumers)
         pthread_cond_signal(&ctx->cond);
     write_sorted_log(ctx);
-    pthread_mutex_unlock(&ctx->log_mutex);
+    pthread_mutex_unlock(&ctx->heap_mutex);
 }
 
 int create_consumers(pthread_t *tids, int num_consumers, struct so_ring_buffer_t *rb, const char *out_filename)
