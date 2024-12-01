@@ -44,8 +44,7 @@ int main(int argc, char **argv)
 	int num_consumers, threads, rc;
 	pthread_t *thread_ids = NULL;
 
-	if (argc < 4)
-	{
+	if (argc < 4) {
 		fprintf(stderr, "Usage %s <input-file> <output-file> <num-consumers:1-32>\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
@@ -55,8 +54,7 @@ int main(int argc, char **argv)
 
 	num_consumers = strtol(argv[3], NULL, 10);
 
-	if (num_consumers <= 0 || num_consumers > 32)
-	{
+	if (num_consumers <= 0 || num_consumers > 32) {
 		fprintf(stderr, "num-consumers [%d] must be in the interval [1-32]\n", num_consumers);
 		exit(EXIT_FAILURE);
 	}
