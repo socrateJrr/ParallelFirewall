@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "packet.h": "c",
+        "ring_buffer.h": "c",
+        "consumer.h": "c",
+        "wait.h": "c",
+        "utils.h": "c"
+    }
+}

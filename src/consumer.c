@@ -110,14 +110,14 @@ void consumer_thread(so_consumer_ctx_t *ctx)
 		pthread_mutex_lock(&ctx->heap_mutex);
 		heap_push(ctx->heap, action, hash, time);
 		pthread_mutex_unlock(&ctx->heap_mutex);
-
-		ctx->finished_consumers++;
-		pthread_mutex_lock(&ctx->heap_mutex);
-		if (ctx->finished_consumers == ctx->num_consumers)
-		pthread_cond_signal(&ctx->cond);
-		write_sorted_log(ctx);
-		pthread_mutex_unlock(&ctx->heap_mutex);
 }
+
+	ctx->finished_consumers++;
+	pthread_mutex_lock(&ctx->heap_mutex);
+	if (ctx->finished_consumers == ctx->num_consumers)
+		pthread_cond_signal(&ctx->cond);
+	write_sorted_log(ctx);
+	pthread_mutex_unlock(&ctx->heap_mutex);
 }
 
 int create_consumers(pthread_t *tids, int num_consumers, struct so_ring_buffer_t *rb, const char *out_filename)
